@@ -1,0 +1,55 @@
+import random;
+import string;
+import bcrypt;
+import hashlib;
+
+def generate_password(length,options):
+    # Generate a random password with n characters
+    
+    password = ""
+    for i in range(length):
+        password += random.choice(options)
+    return password
+
+def gen_bcrypt(rounds,password):
+    # Generate a bcrypt hash of the password
+    # with the number of rounds specified
+    # and return it
+    return bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt(rounds));
+
+def verify_bcrypt_password(password,bcrypt_string):
+    # Verify a password against a bcrypt hash
+    # Return True if the password is correct
+    # Return False if the password is incorrect
+    return bcrypt.checkpw(password.encode('utf-8'),bcrypt_string.encode('utf-8'));
+
+
+#SHA 256, 384, 224, 512, 1
+def SHAEncrypt(password,option):
+    #Ensure option is only a string or integer
+    if type(option) is not int:
+        return "Error: Option must be an Integer"
+    #Ensure option is a valid option
+    #Conver to int
+    option = int(option)
+    if option not in [256,384,224,512,1]:
+        return "Error: Option must be 256, 384, 224, 512, or 1"
+    #Ensure password is a string
+    if type(password) is not str:
+        return "Error: Password must be a string"
+    #Return the hash
+    result = '';
+    if(option == 256):
+        result = hashlib.sha256(password.encode('utf-8'));
+    elif(option == 384):
+        result = hashlib.sha3_384(password.encode('utf-8'));
+    elif(option == 224):
+        result = hashlib.sha3_224(password.encode('utf-8'));
+    elif(option == 512):
+        result = hashlib.sha3_512(password.encode('utf-8'));
+    elif(option == 1):
+        result = hashlib.sha1(password.encode('utf-8'));
+    else:
+        return "Error: Option must be 256, 384, 224, 512, or 1";
+
+    return result.hexdigest();
