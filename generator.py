@@ -1,5 +1,6 @@
 from custom_functions.enc_funs import *;
 from custom_functions.file_handler import *;
+from custom_functions.db_handler import *;
 
 
 #print (gen_bcrypt(12,'Password1'));
@@ -8,6 +9,22 @@ from custom_functions.file_handler import *;
 
 options = ['letters','numbers'];
 
-password = generate_password(24,options);
+password =  Password();
+passwordList = [];
+for i in range(10):
 
-print (password);
+    password.generate_password(24,options)
+    password.BcryptEnc(password.password,12)
+    passwordList.append(password);
+    password = Password();
+
+exportToCSV(passwordList);
+   
+#passDB = PasswordDB('pdb')
+
+#password.generate_password(24,options)
+#password.BcryptEnc(password.password,12)
+
+#passDB.insertPassword(password);
+
+#print (password.encryptedPassword);
