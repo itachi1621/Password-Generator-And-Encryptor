@@ -6,6 +6,8 @@ def exportToCSV(data):
     
     if(not folderExsists('exports')):
         create_folder('exports');
+    file_alive =  file_exsists('exports/passwords.csv');
+    #print (file_alive) 
 
     
 
@@ -14,9 +16,10 @@ def exportToCSV(data):
         passwordList.append([data[i].password,data[i].encryptionType,data[i].encryptedPassword]);
         
     headers = ['Password', 'Type', 'Encrypted Password'];
-    with open('exports/passwords.csv', 'w', newline='',encoding="UTF-8") as file:
+    with open('exports/passwords.csv', 'a', newline='',encoding="UTF-8") as file:
         writer = csv.writer(file);
-        writer.writerow(headers);
+        if(file_alive == False):
+            writer.writerow(headers);
         writer.writerows(passwordList);
     return True;
         

@@ -5,5 +5,4 @@ custom_functions/__pycache__/*
 *.db
 exports
 exports/*
-custom_functions/__pycache__/enc_funs.cpython-310.pyc
-custom_functions/__pycache__/file_handler.cpython-310.pyc
+

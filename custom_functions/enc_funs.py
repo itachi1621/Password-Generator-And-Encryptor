@@ -35,7 +35,7 @@ class Password:
         self.password = password
         return password
 
-    def BcryptEnc(self,password,rounds):
+    def encryptBcrypt(self,password,rounds):
         # Generate a bcrypt hash of the password
         # with the number of rounds specified
         # and return it

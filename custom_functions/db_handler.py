@@ -1,8 +1,7 @@
 import sqlite3;
-
 class PasswordDB:
     def __init__(self,db_name):
-        connection = sqlite3.connect(db_name)
+        connection = sqlite3.connect(db_name+'.db')
         cursor = connection.cursor();
         cursor.execute("CREATE TABLE IF NOT EXISTS PASSWORDS (PASSWORD TEXT,TYPE TEXT,ENCPASSWORD TEXT)");
         connection.commit();
