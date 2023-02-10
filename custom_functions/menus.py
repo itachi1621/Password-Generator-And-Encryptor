@@ -12,7 +12,8 @@ def mainMenu():
             2.)Encrypt a password using(SHA,BCRYPT)
             3.)Verify a password using(SHA,BCRYPT)
             4.)Export all database entires to CSV
-            5.)Exit
+            5.)Display stored database records
+            6.)Exit
         ''')
         ui=input('Please enter your selection [1-5]: ')
         #Check if input is a number
@@ -23,7 +24,17 @@ def mainMenu():
         if (ui == 1):
             passwordGenerationMenu();
         elif (ui == 2):
+            passwordEncryptionMenu();
+        elif (ui == 3):
             pass;
+        elif (ui == 4):
+            pass;
+        elif (ui == 5):
+            passwordList= PasswordDB('pdb')
+            passwordList = passwordList.getPasswords();
+            displayPasswordList(passwordList)
+        elif (ui == 6):
+            sys.exit();
     except ValueError:
         print('Please enter a valid option')
         mainMenu();
@@ -102,6 +113,7 @@ def passwordGenerationMenu(pass_gens=0, pass_len=0, pass_opt=[],passwordList=[],
             #Reload with valid data
             
             passwordGenerationMenu(pass_gens,pass_len,pass_opt,passwordList);
+        
         #Begin creating passwords
         #pass_gens = int(pass_gens);#Cast to appropriate format
         #pass_len = int(pass_len);    
@@ -148,86 +160,160 @@ def passwordGenerationMenu(pass_gens=0, pass_len=0, pass_opt=[],passwordList=[],
     except ValueError:
         input('Please enter a valid option, press enter to continue.');
         passwordGenerationMenu(pass_gens,pass_len,pass_opt,passwordList,state='end');
+
+
     
     
     
+
+def passwordEncryptionMenu(passwords = [],rounds=0):
     
-
-def passwordEncryptionMenu(passwords = [],rounds=0,state='start'):
-    if(state == 'start'):
-        min_rounds=8;
-        max_rounds=19;
-
-        try:
-            if(len(passwords) == 0):
-                print('''Following options available
-                1)Encrypt a password using bcrypt.
-                2)Encrypt a password using SHA.
-                3)Return to main menu
-                4)Exit
-                ''')
-                ui = input('Please enter your selection [1-4]: ')
-                if (not ui.isdigit()):
-                    raise ValueError
-                ui = int(ui)
-                if(ui < 1 or ui > 4):
-                    raise ValueError
-                if (ui == 1):
-                    password = input('Please enter password to be encrypted: ');
-                    if(password == "" or password == " " or len(password) < 8):
-                        raise ValueError
-
-                    rounds = input('Please enter number of rounds to be used [8-19] leave blank to use default of 10: ');
-                    if(rounds == ""):
-                        rounds = "10";
-                    if (not rounds.isdigit()):
-                        raise ValueError
-                    rounds = int(rounds)
-                    if(rounds < min_rounds or rounds > max_rounds):
-                        raise ValueError
-                    password = Password();
-                    password.password = password.encryptBcrypt(password,rounds);
-                    print('Encrypted password: ',password.password);
-                    passwordEncryptionMenu(passwords);
-
-
-
+    try:
+        if(len(passwords) == 0):
+            password = passwordInput()
+            print('''Following options available
+            1)Encrypt password using bcrypt.
+            2)Encrypt password using SHA.
+            3)Return to main menu
+            4)Exit
+            ''')
+            ui = input('Please enter your selection [1-4]: ')
+            if (not ui.isdigit()):
+                raise ValueError
+            ui = int(ui)
+            if(ui < 1 or ui > 4):
+                raise ValueError
+            if (ui == 1):
+               
+               rounds = bcryptRoundsInput()
+               
+               password.encryptBcrypt(password,rounds);
+               print('Encrypted password: ',password.encryptedPassword);
+               passwords=[password];
+               displayAfterEncryptionMenu(passwords);
+            #passwordEncryptionMenu(passwords);
+            elif (ui == 2):
+                #password = Password();
+                passwords=[password];
+                displaySHAMenu(passwords);
+            elif (ui == 3):
+                mainMenu();
                 
-            else:
-                print('''Following options available
-                1)Encrypt generated passwords using bcrypt.
-                2)Encrypt generated passwords using SHA.
-                3)Return to main menu
-                4)Exit
-                ''')
-                ui = input('Please enter your selection [1-4]: ')
-                if (not ui.isdigit()):
-                    raise ValueError
-                ui = int(ui)
-                if(ui < 1 or ui > 4):
-                    raise ValueError
-                if (ui == 1):
-                    rounds = input('Please enter number of rounds to be used [8-19] leave blank to use default of 10: ');
-                    if(rounds == ""):
-                        rounds = "10";
-                    if (not rounds.isdigit()):
-                        raise ValueError
-                    rounds = int(rounds)
-                    if(rounds < min_rounds or rounds > max_rounds):
-                        raise ValueError
-                    for i in range(len(passwords)):
-                        passwords[i].password = passwords[i].encryptBcrypt(passwords[i].password,rounds);
-                        print ('Password ', i+1,' of ',len(passwords),' encrypted: '+passwords[i].encryptedPassword);
-                    print('Passwords encrypted');
-                    passwordEncryptionMenu(passwords);
+
+
             
-            
+        else:
+            print('''Following options available
+            1)Encrypt generated passwords using bcrypt.
+            2)Encrypt generated passwords using SHA.
+            3)Return to main menu
+            4)Exit
+            ''')
+            ui = input('Please enter your selection [1-4]: ')
+            if (not ui.isdigit()):
+                raise ValueError
+            ui = int(ui)
+            if(ui < 1 or ui > 4):
+                raise ValueError
+            if (ui == 1):
+                rounds=bcryptRoundsInput
+                for i in range(len(passwords)):
+                    passwords[i].encryptBcrypt(passwords[i].password,rounds);
+                    print ('Password ', i+1,' of ',len(passwords),' encrypted: '+passwords[i].encryptedPassword);
+                print('Passwords encrypted');
+                displayAfterEncryptionMenu(passwords);
+            elif (ui == 2):
+
+                displaySHAMenu(passwords);
+                    #passwordEncryptionMenu(passwords);
+            elif (ui == 3):
+                mainMenu();
+    except ValueError:
+        input('Invalid input, please hit enter to continue');
+        passwordEncryptionMenu(passwords);
+
+def bcryptRoundsInput():
+    min_rounds=8;
+    max_rounds=19;
+    try:
+        rounds = input('Please enter number of rounds to be used [8-19] leave blank to use default of 10: ');
+        if(rounds == ""):
+            rounds = "10";
+        if (not rounds.isdigit()):
+            raise ValueError
+        rounds = int(rounds)
+        if(rounds < min_rounds or rounds > max_rounds):
+            raise ValueError
+        return rounds;
+    except ValueError:
+        input('Invalid input, please hit enter to continue');
+        bcryptRoundsInput();
+
+def passwordInput():
+    try:
+        password = input('Please enter password to be encrypted: ');
+        if(password == "" or password == " " or len(password) < 8):
+            raise ValueError
+        password_obj = Password(password);
+        return password_obj;  
+        
+    except ValueError:
+        input('Invalid input, please hit enter to continue');
+        passwordInput();
+
+    
+
+def displaySHAMenu(passwords):
+    #256, 384, 224, 512, or 1
+    
+    try:
+        print('''Following options available
+        1.)Encrypt using SHA 1
+        2.)Encrypt using SHA 224
+        3.)Encrypt using SHA 256
+        4.)Encrypt using SHA 384
+        5.)Encrypt using SHA 512
+        ''')
+        sha_type=input('Enter option to be used [1-5]')
+        if (not sha_type.isdigit()):
+            raise ValueError
+        sha_type = int(sha_type)
+        if(sha_type < 1 or sha_type > 5):
+            raise ValueError
+        
+    except ValueError:
+        input('Please enter a valid option, press enter to continue.');
+        displaySHAMenu(passwords);
+    
+    if(sha_type == 1):
+        sha_type = 1;
+    elif(sha_type == 2):
+        sha_type = 224;
+    elif(sha_type == 3):
+        sha_type = 256;
+    elif(sha_type == 4):
+        sha_type = 384;
+    elif(sha_type == 5):
+        sha_type = 512;
+    
+    for i in range(len(passwords)):
+        passwords[i].encryptSHA(passwords[i].password,sha_type);
+        print('Password ',i+1,' of ',len(passwords),' encrypted: ',passwords[i].encryptedPassword);
+    print('Passwords encrypted');
+    displayAfterEncryptionMenu(passwords);
+    
 
 
+def displayPasswordList(passwordList):
+    count = 1
+    for i in passwordList:
+        print('\nRecord #',count)
+        print('Password: ',i[0])
+        print('Encryption Type: ',i[1])
+        print('Encrypted Password: ',i[2],'\n')
+        count+=1
 
-        except ValueError:
-            input('Invalid input, please hit enter to continue');
-            passwordEncryptionMenu(passwords);
+def displayAfterEncryptionMenu(passwords):
     try:
         print('''Following options available
 
@@ -251,20 +337,22 @@ def passwordEncryptionMenu(passwords = [],rounds=0,state='start'):
             exportToCSV(passwords);
             print('Records saved')
             mainMenu();
-        elif (ui == 3):
+        elif (ui == 2):
             passDB = PasswordDB('pdb')
             for i in range(len(passwords)):
-                passDB.insertPassword(passwords[i]);#Not the most efficient way, might replace later
+                passDB.insertPassword(passwords[i]);
             print('Records saved')
             mainMenu();
-        elif (ui == 4):
+        elif (ui == 3):
             mainMenu();
-        elif (ui == 5):
+        elif (ui == 4):
             exit();
+        
         
     
         #Convert to int
     except ValueError:
         input('Please enter a valid option, press enter to continue.');
-        passwordEncryptionMenu(passwords,state='end');
+        displayAfterEncryptionMenu(passwords);
+    
     

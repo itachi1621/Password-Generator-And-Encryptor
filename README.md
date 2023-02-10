@@ -8,11 +8,11 @@ These instructions will help you get started with using the program.
 Before you can use this program, you will need to have the following installed on your machine:
 
 ### Python 3.x
-### The bcrypt and hashlib libraries. 
+### The bcrypt library. 
 You can install these using the following command:
 
 ```Copy code
-pip install bcrypt hashlib
+pip install bcrypt
 ```
 ## Generating a Password
 Here's an example of how to generate a password using this program:

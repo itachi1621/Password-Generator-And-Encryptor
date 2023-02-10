@@ -1,7 +1,5 @@
 from custom_functions.menus import *;
 
-
-1
-
-
+#displayPasswordList(passwordList);
+#print(passwordList);
 mainMenu();

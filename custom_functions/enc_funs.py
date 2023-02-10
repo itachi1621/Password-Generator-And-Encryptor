@@ -5,8 +5,9 @@ import hashlib;
 
 class Password:
 
-    def __init__(self):
-        self.password = '';
+    def __init__(self,password=''):
+
+        self.password = '' if password == '' else password ;
         self.encryptionType = 'None';
         self.encryptedPassword = '';
        
@@ -52,7 +53,7 @@ class Password:
 
 
     #SHA 256, 384, 224, 512, 1
-    def SHAEncrypt(self,password,option):
+    def encryptSHA(self,password,option):
         #Ensure option is only an integer
         if type(option) is not int:
             return "Error: Option must be an Integer"

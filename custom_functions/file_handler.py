@@ -13,7 +13,11 @@ def exportToCSV(data):
 
     passwordList = [];
     for i in range(len(data)):
-        passwordList.append([data[i].password,data[i].encryptionType,data[i].encryptedPassword]);
+        passwordList.append([
+            data[i].password,
+            data[i].encryptionType,
+            data[i].encryptedPassword
+            ]);
         
     headers = ['Password', 'Type', 'Encrypted Password'];
     with open('exports/passwords.csv', 'a', newline='',encoding="UTF-8") as file:
