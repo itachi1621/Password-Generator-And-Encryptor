@@ -28,7 +28,7 @@ def mainMenu():
         elif (ui == 3):
             pass;
         elif (ui == 4):
-            pass;
+            exportDBToCSV();
         elif (ui == 5):
             passwordList= PasswordDB('pdb')
             passwordList = passwordList.getPasswords();
@@ -153,7 +153,7 @@ def passwordGenerationMenu(pass_gens=0, pass_len=0, pass_opt=[],passwordList=[],
         elif (ui == 4):
             mainMenu();
         elif (ui == 5):
-            exit();
+            sys.exit();
         
     
         #Convert to int
@@ -185,9 +185,9 @@ def passwordEncryptionMenu(passwords = [],rounds=0):
                 raise ValueError
             if (ui == 1):
                
-               rounds = bcryptRoundsInput()
-               
-               password.encryptBcrypt(password,rounds);
+               rounds=bcryptRoundsInput()
+               print(rounds);
+               password.encryptBcrypt(password.password,rounds);
                print('Encrypted password: ',password.encryptedPassword);
                passwords=[password];
                displayAfterEncryptionMenu(passwords);
@@ -216,7 +216,7 @@ def passwordEncryptionMenu(passwords = [],rounds=0):
             if(ui < 1 or ui > 4):
                 raise ValueError
             if (ui == 1):
-                rounds=bcryptRoundsInput
+                rounds=bcryptRoundsInput()
                 for i in range(len(passwords)):
                     passwords[i].encryptBcrypt(passwords[i].password,rounds);
                     print ('Password ', i+1,' of ',len(passwords),' encrypted: '+passwords[i].encryptedPassword);
@@ -244,10 +244,11 @@ def bcryptRoundsInput():
         rounds = int(rounds)
         if(rounds < min_rounds or rounds > max_rounds):
             raise ValueError
+        #rounds = int(rounds)
         return rounds;
     except ValueError:
         input('Invalid input, please hit enter to continue');
-        bcryptRoundsInput();
+        bcryptRoundsInput(rounds);
 
 def passwordInput():
     try:
@@ -346,13 +347,26 @@ def displayAfterEncryptionMenu(passwords):
         elif (ui == 3):
             mainMenu();
         elif (ui == 4):
-            exit();
+            sys.exit();
         
         
     
         #Convert to int
     except ValueError:
         input('Please enter a valid option, press enter to continue.');
-        displayAfterEncryptionMenu(passwords);
+        displayAfterEncryptionMenu(passwords)
+        
+def exportDBToCSV():
+    passDB = PasswordDB('pdb');
+    passwordList= [];
+    passDB = passDB.getPasswords();
+    for i in passDB:
+        password = Password();
+        password.password=i[0]
+        password.encryptionType=i[1]
+        password.encryptedPassword=i[2]
+        passwordList.append(password);
+    exportToCSV(passwordList);
+    
     
     

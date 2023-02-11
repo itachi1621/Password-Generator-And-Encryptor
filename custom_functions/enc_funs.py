@@ -40,6 +40,8 @@ class Password:
         # Generate a bcrypt hash of the password
         # with the number of rounds specified
         # and return it
+        #print(rounds,'lll');
+        
         self.encryptionType = 'Bcrypt';
         self.password = password;
         self.encryptedPassword = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt(rounds)).decode();

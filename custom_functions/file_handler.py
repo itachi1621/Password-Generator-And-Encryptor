@@ -4,12 +4,13 @@ import csv;
 
 def exportToCSV(data):
     
+    
     if(not folderExsists('exports')):
-        create_folder('exports');
+        #create_folder('../exports');
+        os.makedirs('exports');
     file_alive =  file_exsists('exports/passwords.csv');
     #print (file_alive) 
 
-    
 
     passwordList = [];
     for i in range(len(data)):
@@ -28,7 +29,7 @@ def exportToCSV(data):
     return True;
         
 def folderExsists(name):
-    if os.path.isdir(name):
+    if os.path.isdir(name) == True:
         return True;
     else:
         return False;
@@ -38,14 +39,7 @@ def file_exsists(file_path):
         return True;
     else:
         return False;
-
-def create_folder(name):
-
-    if (not folderExsists):
-        os.makedirs(name);
-        return True;
-    else:
-        return False;
+  
 
 def delete_file(path,name):
 
