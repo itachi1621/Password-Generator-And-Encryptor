@@ -12,7 +12,8 @@ def mainMenu():
             2.)Encrypt a password using(SHA,BCRYPT)
             3.)Verify a password using(SHA,BCRYPT)
             4.)Export all database entires to CSV
-            5.)Display stored database records
+            5.)Display stored database records.
+            9.Delete all database records.
             6.)Exit
         ''')
         ui=input('Please enter your selection [1-5]: ')
@@ -35,6 +36,9 @@ def mainMenu():
             displayPasswordList(passwordList)
         elif (ui == 6):
             sys.exit();
+        elif (ui == 9):
+            passwordDB= PasswordDB('pdb')
+            passwordDB.resetDB();
     except ValueError:
         print('Please enter a valid option')
         mainMenu();
@@ -232,6 +236,17 @@ def passwordEncryptionMenu(passwords = [],rounds=0):
         input('Invalid input, please hit enter to continue');
         passwordEncryptionMenu(passwords);
 
+def shaInput():
+    try:
+        sha = input('Please enter  SHA  [1-5]: ');
+        if (sha == '' or sha == ' '):
+            raise ValueError
+   
+        return sha;
+    except ValueError:
+        input('Invalid input, please hit enter to continue');
+        shaInput();
+
 def bcryptRoundsInput():
     min_rounds=8;
     max_rounds=19;
@@ -252,7 +267,7 @@ def bcryptRoundsInput():
 
 def passwordInput():
     try:
-        password = input('Please enter password to be encrypted: ');
+        password = input('Please enter a password : ');
         if(password == "" or password == " " or len(password) < 8):
             raise ValueError
         password_obj = Password(password);
@@ -367,6 +382,93 @@ def exportDBToCSV():
         password.encryptedPassword=i[2]
         passwordList.append(password);
     exportToCSV(passwordList);
+
+def verifySHAMenu(password = '',sha_opt=1,hashed_password=''):
+    try:
+        print('''Following options available
+        1.)Verify using SHA 1
+        2.)Verify using SHA 224
+        3.)Verify using SHA 256
+        4.)Verify using SHA 384
+        5.)Verify using SHA 512
+        ''')
+        sha_type=input('Enter option to be used [1-5]')
+        if (not sha_type.isdigit()):
+            raise ValueError
+        sha_type = int(sha_type)
+        if(sha_type < 1 or sha_type > 5):
+            raise ValueError
+        
+    except ValueError:
+        input('Please enter a valid option, press enter to continue.');
+        verifySHAMenu(password,sha_opt);
+    if(password == '' or password == ' '):
+        password = passwordInput();
+    
+    sha_input=sha_input();
+    
+    if(sha_type == 1):
+        sha_type = 1;
+    elif(sha_type == 2):
+        sha_type = 224;
+    elif(sha_type == 3):
+        sha_type = 256;
+    elif(sha_type == 4):
+        sha_type = 384;
+    elif(sha_type == 5):
+        sha_type = 512;
+    
+    password.SHAVerify(password.password,sha_input,sha_type);
+    if(password.encryptedPassword == password.password):
+        print('Password verified');
+    else:
+        print('Password not verified');
+    mainMenu();
+
+def verifyBCryptMenu(password = '',hashed_password=''):
+    if(password == '' or password == ' '):
+        password = passwordInput();
+
+    if(password.BcryptVerify(password.password,hashed_password)):
+        print('Password verified');
+    else:
+        print('Password not verified');
+    mainMenu();
+def passwordHashVerificationMenu():
+    try:
+        print('''Following options available
+        1.)Verify using SHA
+        2.)Verify using BCrypt
+        3.)Return to main menu
+        4.)Exit    
+        ''')
+
+        ui = input('Please enter your selection [1-5]: ')
+        
+        if (not ui.isdigit()):
+            raise ValueError
+        ui = int(ui)
+
+        if(ui < 1 or ui > 5):
+            raise ValueError
+        
+        
+        if (ui == 1):
+            verifySHAMenu();
+        elif (ui == 2):
+            verifyBCryptMenu();
+        elif (ui == 3):
+            mainMenu();
+        elif (ui == 4):
+            sys.exit();
+        
+        
+    
+        #Convert to int
+    except ValueError:
+        input('Please enter a valid option, press enter to continue.');
+        passwordHashVerificationMenu()
+
     
     
     
