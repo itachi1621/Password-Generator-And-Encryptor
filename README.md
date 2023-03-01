@@ -14,5 +14,3 @@ You can install these using the following command:
 ```Copy code
 pip install bcrypt
 ```
-## Generating a Password
-Here's an example of how to generate a password using this program:

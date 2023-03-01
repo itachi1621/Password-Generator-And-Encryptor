@@ -27,18 +27,21 @@ def mainMenu():
         elif (ui == 2):
             passwordEncryptionMenu();
         elif (ui == 3):
-            pass;
+            passwordHashVerificationMenu();
         elif (ui == 4):
             exportDBToCSV();
         elif (ui == 5):
             passwordList= PasswordDB('pdb')
             passwordList = passwordList.getPasswords();
             displayPasswordList(passwordList)
+            mainMenu()
         elif (ui == 6):
             sys.exit();
         elif (ui == 9):
             passwordDB= PasswordDB('pdb')
             passwordDB.resetDB();
+            print('Database deleted')
+            mainMenu()
     except ValueError:
         print('Please enter a valid option')
         mainMenu();
@@ -276,6 +279,19 @@ def passwordInput():
     except ValueError:
         input('Invalid input, please hit enter to continue');
         passwordInput();
+        
+def bcryptHashInput():
+    try:
+        bhash = input('Please enter a bcrypt hash : ');
+        if(bhash == "" or bhash == " " or len(bhash) < 8):
+            raise ValueError
+        
+        return bhash;  
+        
+    except ValueError:
+        input('Invalid input, please hit enter to continue');
+        bcryptHashInput();
+    
 
     
 
@@ -420,19 +436,21 @@ def verifySHAMenu(password = '',sha_opt=1,hashed_password=''):
     
     password.SHAVerify(password.password,sha_input,sha_type);
     if(password.encryptedPassword == password.password):
-        print('Password verified');
+        print('SHA verified, password matches the supplied hash');
     else:
-        print('Password not verified');
+        print('SHA verification failed, password does not match hash provided ');
     mainMenu();
 
 def verifyBCryptMenu(password = '',hashed_password=''):
     if(password == '' or password == ' '):
+        
         password = passwordInput();
-
+        hashed_password = bcryptHashInput();
+     
     if(password.BcryptVerify(password.password,hashed_password)):
-        print('Password verified');
+        print('Bcrypt hash matches password');
     else:
-        print('Password not verified');
+        print('Bcrypt hash does not match password');
     mainMenu();
 def passwordHashVerificationMenu():
     try:
@@ -449,7 +467,7 @@ def passwordHashVerificationMenu():
             raise ValueError
         ui = int(ui)
 
-        if(ui < 1 or ui > 5):
+        if(ui < 1 or ui > 4):
             raise ValueError
         
         

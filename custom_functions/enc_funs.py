@@ -47,7 +47,7 @@ class Password:
         self.encryptedPassword = bcrypt.hashpw(password.encode('utf-8'),bcrypt.gensalt(rounds)).decode();
         return self.encryptedPassword
 
-    def BcryptVerify(password,bcrypt_string):
+    def BcryptVerify(self,password,bcrypt_string):
         # Verify a password against a bcrypt hash
         # Return True if the password is correct
         # Return False if the password is incorrect
@@ -86,7 +86,7 @@ class Password:
         self.encryptedPassword = result.hexdigest();
         return result.hexdigest();
 
-    def SHAVerify(password,hash,option):
+    def SHAVerify(self,password,hash,option):
         #Ensure option is only an integer
         if type(option) is not int:
             return "Error: Option must be an Integer"
